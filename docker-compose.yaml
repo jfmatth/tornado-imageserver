@@ -1,0 +1,12 @@
+services:
+  imageserver:
+    build: .
+    container_name: tornado-imageserver
+    ports:
+      - "8888:8888"
+    volumes:
+      - images:/app/images
+    restart: unless-stopped
+
+volumes:
+  images:
