@@ -1,4 +1,7 @@
 import os
+import json
+from pathlib import Path
+
 import tornado.ioloop
 import tornado.web
 
@@ -52,31 +55,17 @@ class UploadHandler(tornado.web.RequestHandler):
 
         self.finish({"status": "ok", "filename":path} )
 
+class listHandler(tornado.web.RequestHandler):
+    async def get(self):
+        # Lightweight, deterministic response
+        folder = Path(UPLOAD_DIR)
 
-# class StreamImageHandler(tornado.web.RequestHandler):
-#     async def get(self, filename):
-#         path = os.path.join(UPLOAD_DIR, filename)
-
-#         if not os.path.exists(path):
-#             self.set_status(404)
-#             self.finish(f"Image {{path}} not found")
-#             return
-
-#         self.set_header("Content-Type", "image/jpeg")  # or detect dynamically
-#         self.set_header("Content-Disposition", f"inline; filename={filename}")
-
-#         with open(path, "rb") as f:
-#             while True:
-#                 chunk = f.read(CHUNK_SIZE)
-#                 if not chunk:
-#                     break
-#                 await self.write(chunk)
-#                 await self.flush()
-
-#         self.finish()
+        files = [p for p in folder.iterdir() if p.is_file()]
+        data = {"files": [str(f) for f in files] }
+        self.write(json.dumps(data) )
 
 class HealthHandler(tornado.web.RequestHandler):
-    def get(self):
+    async def get(self):
         # Lightweight, deterministic response
         self.set_header("Content-Type", "application/json")
         self.write({"status": "ok"})
@@ -85,9 +74,9 @@ def make_app():
     return tornado.web.Application([
         (r"/", UploadPageHandler),
         (r"/upload", UploadHandler),
-        # (r"/stream/(.*)", StreamImageHandler),
         (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": UPLOAD_DIR}),
         (r"/healthz", HealthHandler),
+        (r"/list", listHandler),
     ],)
 
 
