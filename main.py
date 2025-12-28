@@ -82,7 +82,7 @@ def make_app():
         (r"/upload", UploadHandler),
         # (r"/stream/(.*)", StreamImageHandler),
         (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": UPLOAD_DIR}),
-    ])
+    ],)
 
 
 if __name__ == "__main__":
