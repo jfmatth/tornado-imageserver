@@ -42,7 +42,7 @@ podman build `
 if ($Push) {
     Write-Host "Pushing..."
     podman push "$($imageName):$version" 
-    podman push "$imageName-utility:$version"
+    podman push "$($imageName):latest"
 }
 
 Write-Host "✅ Build complete. Images tagged as:"

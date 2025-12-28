@@ -75,6 +75,11 @@ class UploadHandler(tornado.web.RequestHandler):
 
 #         self.finish()
 
+class HealthHandler(tornado.web.RequestHandler):
+    def get(self):
+        # Lightweight, deterministic response
+        self.set_header("Content-Type", "application/json")
+        self.write({"status": "ok"})
 
 def make_app():
     return tornado.web.Application([
@@ -82,6 +87,7 @@ def make_app():
         (r"/upload", UploadHandler),
         # (r"/stream/(.*)", StreamImageHandler),
         (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": UPLOAD_DIR}),
+        (r"/healthz", HealthHandler),
     ],)
 
 
