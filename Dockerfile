@@ -1,7 +1,6 @@
 ##
 # Stage 1 - Build python dependencies
 ##
-
     FROM cgr.dev/chainguard/python:latest-dev as builder
 
     USER root
@@ -18,7 +17,6 @@
 ##
 # Stage 2
 ##
-
     FROM cgr.dev/chainguard/python:latest
 
     WORKDIR /app
