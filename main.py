@@ -1,6 +1,7 @@
 import os
 import json
 from pathlib import Path
+import aiofiles
 
 import tornado.ioloop
 import tornado.web
@@ -48,16 +49,14 @@ class UploadHandler(tornado.web.RequestHandler):
         filename = fileinfo.filename
         body = fileinfo.body
 
-        # Deterministic write
         path = os.path.join(UPLOAD_DIR, filename)
-        with open(path, "wb") as f:
-            f.write(body)
+        async with aiofiles.open(path, "wb") as f:
+            await f.write(body)
 
         self.finish({"status": "ok", "filename":path} )
 
 class listHandler(tornado.web.RequestHandler):
     async def get(self):
-        # Lightweight, deterministic response
         folder = Path(UPLOAD_DIR)
 
         files = [p for p in folder.iterdir() if p.is_file()]
@@ -66,7 +65,6 @@ class listHandler(tornado.web.RequestHandler):
 
 class HealthHandler(tornado.web.RequestHandler):
     async def get(self):
-        # Lightweight, deterministic response
         self.set_header("Content-Type", "application/json")
         self.write({"status": "ok"})
 
