@@ -58,10 +58,13 @@ class UploadHandler(tornado.web.RequestHandler):
 class listHandler(tornado.web.RequestHandler):
     async def get(self):
         folder = Path(UPLOAD_DIR)
+        url = self.request.protocol + "://" + self.request.host
 
-        files = [p for p in folder.iterdir() if p.is_file()]
-        data = {"files": [str(f) for f in files] }
-        self.write(json.dumps(data) )
+        files = [p.name for p in folder.iterdir() if p.is_file()]
+
+        data = {"files": [url + self.application.reverse_url("images", f) for f in files] }
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps(data, indent=2) )
 
 class HealthHandler(tornado.web.RequestHandler):
     async def get(self):
@@ -72,7 +75,7 @@ def make_app():
     return tornado.web.Application([
         (r"/", UploadPageHandler),
         (r"/upload", UploadHandler),
-        (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": UPLOAD_DIR}),
+        (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": UPLOAD_DIR},"images"),
         (r"/healthz", HealthHandler),
         (r"/list", listHandler),
     ],)
