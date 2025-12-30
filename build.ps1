@@ -2,21 +2,23 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
     [string]$ImageName,
-
-    [switch]$Push   # optional flag, defaults to False
+    [switch]$Push   
 )
-
-if ((podman machine inspect | ConvertFrom-Json).State -ne "Running") {
-    podman machine start
-}
 
 # Ensure script stops on errors
 $ErrorActionPreference = "Stop"
 
-# Step 1: Read the version tag from the VERSION file
+$imagefile = "IMAGE"
+
+if (Test-Path $imagefile) {
+    # REPO EXISTS, use it's content for the variable
+    $ImageName = Get-Content -Raw -Path $imagefile
+} elseif (-not $ImageName) {
+    Write-Error "No Repository and File REPO doesn't exist"
+    exit 1
+}
+
 if (-Not (Test-Path "./VERSION")) {
     Write-Error "VERSION file not found in current directory."
     exit 1
@@ -29,10 +31,14 @@ if ([string]::IsNullOrWhiteSpace($version)) {
     exit 1
 }
 
+if ((podman machine inspect | ConvertFrom-Json).State -ne "Running") {
+    podman machine start
+}
+
 Write-Host "Using version tag: $version"
 
 # Step 2: Build the main image from Dockerfile
-Write-Host "Building main image..."
+Write-Host "Building main image $ImageName"
 podman build `
     --file Dockerfile `
     --tag "$($imageName):$version" `
