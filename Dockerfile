@@ -12,7 +12,7 @@
     WORKDIR /app
 
     COPY pyproject.toml  .
-    RUN uv sync 
+    RUN uv sync --compile-bytecode
 
 ##
 # Stage 2
