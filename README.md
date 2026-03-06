@@ -3,11 +3,10 @@
 Provides a rudimentary image server, easy upload, no security, etc.
 
 # URLs  
-/ - upload dialog  
-/list - JSON output of what images are on the system  
+<!-- /list - JSON output of what images are on the system  
 /images/<name> - retreive the image as JPG or PNG, used for my websites.  
-/healthz - Kubernetes health / live check  
-/upload - called by post from /  
+/healthz - Kubernetes health / live check   -->
+/upload - Upload Screen and POST handler
 
 ## Building
 

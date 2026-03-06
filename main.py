@@ -12,6 +12,9 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 CHUNK_SIZE = 64 * 1024  # 64 KB
 
 class UploadPageHandler(tornado.web.RequestHandler):
+    pass
+
+class UploadHandler(tornado.web.RequestHandler):
     async def get(self):
         self.write("""
         <!DOCTYPE html>
@@ -35,7 +38,6 @@ class UploadPageHandler(tornado.web.RequestHandler):
         </html>
         """)
 
-class UploadHandler(tornado.web.RequestHandler):
     async def post(self):
         """
         Accepts multipart/form-data with a file field named 'file'.
@@ -73,11 +75,11 @@ class HealthHandler(tornado.web.RequestHandler):
 
 def make_app():
     return tornado.web.Application([
-        (r"/", UploadPageHandler),
+        # (r"/", UploadPageHandler),
         (r"/upload", UploadHandler),
-        (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": UPLOAD_DIR},"images"),
-        (r"/healthz", HealthHandler),
-        (r"/list", listHandler),
+        # (r"/images/(.*)", tornado.web.StaticFileHandler, {"path": UPLOAD_DIR},"images"),
+        # (r"/healthz", HealthHandler),
+        # (r"/list", listHandler),
     ],)
 
 
