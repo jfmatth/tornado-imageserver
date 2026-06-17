@@ -11,10 +11,10 @@ Provides a rudimentary image server, easy upload, no security, etc.
 
 ## Building
 
-The tag is picked up my the VERSION file
+The repo and tag is picked up by the IMAGE and VERSION files
 
 ```
-.\build.ps1 ghcr.io/jfmatth/tornado-imageserver
+build
 ```
 
 ### Pushing
